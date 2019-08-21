@@ -1,0 +1,28 @@
+#!/bin/bash
+export LC_ALL=C
+export LANG=C
+export ARCH=arm64
+export SUBARCH=arm64
+export HEADER_ARCH=arm64
+export DTC_EXT=dtc
+export CROSS_COMPILE="${HOME}/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-gnu-6.5.0/bin/aarch64-linux-gnu-"
+
+clover() {
+rm AnyKernel3/Image.gz-dtb
+rm -rf out
+date="`date +%Y%m%d%H%M%S`"
+export LOCALVERSION=-$date
+zipname="Xtreme_Clover_Kernel-$date.zip"
+make O=out clover-xtreme_defconfig
+make -j$(nproc --all) O=out
+cp -f out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+cd AnyKernel3
+zip -9 -r "$zipname" *
+cp -f "$zipname" ~
+rm -f "$zipname"
+}
+
+if [ "$1" == clover ]
+then
+clover
+fi

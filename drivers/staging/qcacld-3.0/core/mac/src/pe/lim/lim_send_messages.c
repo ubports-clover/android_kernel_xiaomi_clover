@@ -94,6 +94,7 @@ tSirRetStatus lim_send_beacon_params(tpAniSirGlobal pMac,
 	msgQ.bodyval = 0;
 	pe_debug("Sending WMA_UPDATE_BEACON_IND, paramChangeBitmap in hex: %x",
 	       pUpdatedBcnParams->paramChangeBitmap);
+#ifdef LIM_TRACE_RECORD
 	if (NULL == psessionEntry) {
 		qdf_mem_free(pBcnParams);
 		MTRACE(mac_trace_msg_tx(pMac, NO_SESSION, msgQ.type));
@@ -103,6 +104,7 @@ tSirRetStatus lim_send_beacon_params(tpAniSirGlobal pMac,
 					psessionEntry->peSessionId,
 					msgQ.type));
 	}
+#endif
 	pBcnParams->smeSessionId = psessionEntry->smeSessionId;
 	retCode = wma_post_ctrl_msg(pMac, &msgQ);
 	if (eSIR_SUCCESS != retCode) {
@@ -481,12 +483,14 @@ extern tSirRetStatus lim_set_link_state_ft(tpAniSirGlobal pMac, tSirLinkState
 	msgQ.reserved = 0;
 	msgQ.bodyptr = pLinkStateParams;
 	msgQ.bodyval = 0;
+#ifdef LIM_TRACE_RECORD
 	if (NULL == psessionEntry) {
 		MTRACE(mac_trace_msg_tx(pMac, NO_SESSION, msgQ.type));
 	} else {
 		MTRACE(mac_trace_msg_tx
 			       (pMac, psessionEntry->peSessionId, msgQ.type));
 	}
+#endif
 
 	retCode = (uint32_t) wma_post_ctrl_msg(pMac, &msgQ);
 	if (retCode != eSIR_SUCCESS) {
@@ -587,12 +591,14 @@ tSirRetStatus lim_send_mode_update(tpAniSirGlobal pMac,
 	msgQ.bodyval = 0;
 	pe_debug("Sending WMA_UPDATE_OP_MODE, op_mode %d, sta_id %d",
 			pVhtOpMode->opMode, pVhtOpMode->staId);
+#ifdef LIM_TRACE_RECORD
 	if (NULL == psessionEntry)
 		MTRACE(mac_trace_msg_tx(pMac, NO_SESSION, msgQ.type));
 	else
 		MTRACE(mac_trace_msg_tx(pMac,
 					psessionEntry->peSessionId,
 					msgQ.type));
+#endif
 	retCode = wma_post_ctrl_msg(pMac, &msgQ);
 	if (eSIR_SUCCESS != retCode) {
 		qdf_mem_free(pVhtOpMode);
@@ -622,12 +628,14 @@ tSirRetStatus lim_send_rx_nss_update(tpAniSirGlobal pMac,
 	msgQ.bodyptr = pRxNss;
 	msgQ.bodyval = 0;
 	pe_debug("Sending WMA_UPDATE_RX_NSS");
+#ifdef LIM_TRACE_RECORD
 	if (NULL == psessionEntry)
 		MTRACE(mac_trace_msg_tx(pMac, NO_SESSION, msgQ.type));
 	else
 		MTRACE(mac_trace_msg_tx(pMac,
 					psessionEntry->peSessionId,
 					msgQ.type));
+#endif
 	retCode = wma_post_ctrl_msg(pMac, &msgQ);
 	if (eSIR_SUCCESS != retCode) {
 		qdf_mem_free(pRxNss);
@@ -659,12 +667,14 @@ tSirRetStatus lim_set_membership(tpAniSirGlobal pMac,
 	msgQ.bodyptr = pMembership;
 	msgQ.bodyval = 0;
 	pe_debug("Sending WMA_UPDATE_MEMBERSHIP");
+#ifdef LIM_TRACE_RECORD
 	if (NULL == psessionEntry)
 		MTRACE(mac_trace_msg_tx(pMac, NO_SESSION, msgQ.type));
 	else
 		MTRACE(mac_trace_msg_tx(pMac,
 					psessionEntry->peSessionId,
 					msgQ.type));
+#endif
 	retCode = wma_post_ctrl_msg(pMac, &msgQ);
 	if (eSIR_SUCCESS != retCode) {
 		qdf_mem_free(pMembership);
@@ -695,12 +705,14 @@ tSirRetStatus lim_set_user_pos(tpAniSirGlobal pMac,
 	msgQ.bodyptr = pUserPos;
 	msgQ.bodyval = 0;
 	pe_debug("Sending WMA_UPDATE_USERPOS");
+#ifdef LIM_TRACE_RECORD
 	if (NULL == psessionEntry)
 		MTRACE(mac_trace_msg_tx(pMac, NO_SESSION, msgQ.type));
 	else
 		MTRACE(mac_trace_msg_tx(pMac,
 					psessionEntry->peSessionId,
 					msgQ.type));
+#endif
 	retCode = wma_post_ctrl_msg(pMac, &msgQ);
 	if (eSIR_SUCCESS != retCode) {
 		qdf_mem_free(pUserPos);

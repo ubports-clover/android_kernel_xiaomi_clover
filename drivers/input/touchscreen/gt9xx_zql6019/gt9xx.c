@@ -34,6 +34,7 @@
 #define I2C_MAX_TRANSFER_SIZE   255
 #define GTP_PEN_BUTTON1		BTN_STYLUS
 #define GTP_PEN_BUTTON2		BTN_STYLUS2
+#define ENABLE_TOUCH_SZIE 	0
 
 #if GTP_CHARGER_SWITCH
 u8 config_charger[GTP_CONFIG_MAX_LENGTH + GTP_ADDR_LENGTH]
@@ -517,8 +518,10 @@ static void gtp_type_a_report(struct goodix_ts_data *ts, u8 touch_num,
 					 points->x);
 			input_report_abs(ts->input_dev, ABS_MT_POSITION_Y,
 					 points->y);
-			input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR,
-					 points->w);
+#if ENABLE_TOUCH_SZIE
+			// input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR,
+			// 		 points->w);
+#endif
 			input_report_abs(ts->input_dev, ABS_MT_PRESSURE,
 					 points->p);
 			input_mt_sync(ts->input_dev);
@@ -568,8 +571,10 @@ static void gtp_mt_slot_report(struct goodix_ts_data *ts, u8 touch_num,
 					 points->x);
 			input_report_abs(ts->input_dev, ABS_MT_POSITION_Y,
 					 points->y);
-			input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR,
-					 points->w);
+#if ENABLE_TOUCH_SZIE
+			// input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR,
+			// 		 points->w);
+#endif
 			input_report_abs(ts->input_dev, ABS_MT_PRESSURE,
 					 points->p);
 
@@ -1866,8 +1871,10 @@ static s8 gtp_request_input_dev(struct goodix_ts_data *ts)
 			     ts->pdata->abs_size_x, 0, 0);
 	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y, 0,
 			     ts->pdata->abs_size_y, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0,
-			     ts->pdata->max_touch_width, 0, 0);
+#if ENABLE_TOUCH_SZIE
+	// input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0,
+	// 		     ts->pdata->max_touch_width, 0, 0);
+#endif
 	input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE, 0,
 			     ts->pdata->max_touch_pressure, 0, 0);
 	input_set_abs_params(ts->input_dev, ABS_MT_TRACKING_ID, 0,
@@ -2479,7 +2486,9 @@ static void gtp_clear_touch_event(struct goodix_ts_data *ts){
  		input_mt_slot(ts->input_dev, i);
 		input_mt_report_slot_state(ts->input_dev, MT_TOOL_FINGER, true);
 		input_report_abs(ts->input_dev, ABS_MT_PRESSURE, 0);
-		input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0);
+#if ENABLE_TOUCH_SZIE
+		// input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0);
+#endif
  		input_mt_report_slot_state(ts->input_dev, MT_TOOL_FINGER, false);
  	}
  	input_report_key(ts->input_dev, BTN_TOUCH, 0);

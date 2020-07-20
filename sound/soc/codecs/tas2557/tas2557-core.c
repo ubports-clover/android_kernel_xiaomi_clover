@@ -935,6 +935,7 @@ extern atomic_t tas2557_ref_count;
 int tas2557_enable(struct tas2557_priv *pTAS2557, bool bEnable)
 {
 	int nResult = 0;
+	const char *pFWName;
 	struct TProgram *pProgram;
 	struct TConfiguration *pConfiguration;
 	unsigned int nValue;
@@ -962,7 +963,19 @@ int tas2557_enable(struct tas2557_priv *pTAS2557, bool bEnable)
 	if ((pTAS2557->mpFirmware->mnPrograms == 0)
 		|| (pTAS2557->mpFirmware->mnConfigurations == 0)) {
 		dev_err(pTAS2557->dev, "%s, firmware not loaded\n", __func__);
-		goto end;
+		/*Load firmware*/
+		if (pTAS2557->mnLPGID == TAS2557_PG_VERSION_2P1) {
+			dev_info(pTAS2557->dev, "PG2.1 Silicon found\n");
+			pFWName = TAS2557_FW_NAME;
+		} else {
+			dev_info(pTAS2557->dev, "try D9P Silicon found\n");
+			pFWName = TAS2557_D9P_FW_NAME;
+		}
+		nResult = request_firmware_nowait(THIS_MODULE, 1, pFWName,
+			pTAS2557->dev, GFP_KERNEL, pTAS2557, tas2557_fw_ready);
+		if(nResult < 0)
+			goto end;
+		dev_err(pTAS2557->dev, "%s, firmware is loaded\n", __func__);
 	}
 	/* check safe guard*/
 	nResult = pTAS2557->read(pTAS2557, channel_left, TAS2557_SAFE_GUARD_REG, &nValue);
